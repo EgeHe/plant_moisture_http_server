@@ -1,4 +1,4 @@
-import plant_moisture_http_server
+import plant_moisture_http_server.http_server as server
 
 if __name__ == '__main__':
-    pass
+    server.start()
