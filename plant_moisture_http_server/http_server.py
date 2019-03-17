@@ -33,7 +33,7 @@ class DataServer:
             station_limits[station] = {}
             try:
                 station_limits[station][self.MIN_MOIST] = float(config[station][self.MIN_MOIST])
-                station_limits[station][self.MIN_MOIST] = float(config[station][self.MAX_MOIST])
+                station_limits[station][self.MAX_MOIST] = float(config[station][self.MAX_MOIST])
             except KeyError:
                 del station_limits[station]
         return station_limits
