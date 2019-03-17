@@ -68,13 +68,13 @@ class DataServer:
             self._write_entry_to_db(station, self._handle_moisture(raw_moisture, station))
 
     def _set_station_min(self, station, value):
-        if station not in self.station_limits.keys:
+        if station not in self.station_limits.keys():
             self.station_limits[station] = {}
         self.station_limits[station][self.MIN_MOIST] = value
         self._write_station_limits()
 
     def _set_station_max(self, station, value):
-        if station not in self.station_limits.keys:
+        if station not in self.station_limits.keys():
             self.station_limits[station] = {}
         self.station_limits[station][self.MAX_MOIST] = value
         self._write_station_limits()
