@@ -80,6 +80,7 @@ class DataServer:
         self._write_station_limits()
 
     def _handle_moisture(self, raw_moisture, station):
+        raw_moisture = float(raw_moisture)
         try:
             station_limits = self.station_limits[station]
             min_moist = station_limits[self.MIN_MOIST]
