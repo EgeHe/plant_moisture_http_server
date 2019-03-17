@@ -8,5 +8,9 @@ setup(
     license='MIT',
     author='Eero Heinänen',
     author_email='eero.heinanen@hotmail.com',
-    description=''
+    description='',
+    install_requires=[
+        'cherrypy',
+        'influxdb'
+    ]
 )
