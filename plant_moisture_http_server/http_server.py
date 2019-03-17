@@ -46,10 +46,7 @@ class DataServer:
             config.write(configfile)
 
     def GET(self, **kwargs):
-        if self.STATION in kwargs.keys() and self.MOISTURE in kwargs.keys():
-            station = kwargs[self.STATION]
-            moisture = kwargs[self.MOISTURE]
-            self._write_entry_to_db(station, moisture)
+        print(kwargs)
 
     def POST(self, **kwargs):
 
