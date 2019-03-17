@@ -48,20 +48,25 @@ class DataServer:
     def GET(self, **kwargs):
         print(kwargs)
 
+    @cherrypy.tools.json_in()
     def POST(self, **kwargs):
-
-        if self.STATION not in kwargs.keys():
+        if self.STATION in kwargs.keys():
+            data_dict = kwargs
+        elif self.STATION in cherrypy.request.json:
+            data_dict = cherrypy.request.json
+        else:
             return
-        station = kwargs[self.STATION]
 
-        if self.MAX_MOIST in kwargs.keys():
-            self._set_station_max(station, kwargs[self.MAX_MOIST])
+        station = data_dict[self.STATION]
 
-        if self.MIN_MOIST in kwargs.keys():
-            self._set_station_min(station, kwargs[self.MIN_MOIST])
+        if self.MAX_MOIST in data_dict.keys():
+            self._set_station_max(station, data_dict[self.MAX_MOIST])
 
-        if self.MOISTURE in kwargs.keys():
-            raw_moisture = kwargs[self.MOISTURE]
+        if self.MIN_MOIST in data_dict.keys():
+            self._set_station_min(station, data_dict[self.MIN_MOIST])
+
+        if self.MOISTURE in data_dict.keys():
+            raw_moisture = data_dict[self.MOISTURE]
             self._write_entry_to_db(station, self._handle_moisture(raw_moisture, station))
 
     def _set_station_min(self, station, value):
