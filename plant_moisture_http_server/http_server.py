@@ -32,8 +32,8 @@ class DataServer:
         for station in config.sections():
             station_limits[station] = {}
             try:
-                station_limits[station][self.MIN_MOIST] = config[station][self.MIN_MOIST]
-                station_limits[station][self.MIN_MOIST] = config[station][self.MAX_MOIST]
+                station_limits[station][self.MIN_MOIST] = float(config[station][self.MIN_MOIST])
+                station_limits[station][self.MIN_MOIST] = float(config[station][self.MAX_MOIST])
             except KeyError:
                 del station_limits[station]
         return station_limits
@@ -70,13 +70,13 @@ class DataServer:
     def _set_station_min(self, station, value):
         if station not in self.station_limits.keys():
             self.station_limits[station] = {}
-        self.station_limits[station][self.MIN_MOIST] = value
+        self.station_limits[station][self.MIN_MOIST] = float(value)
         self._write_station_limits()
 
     def _set_station_max(self, station, value):
         if station not in self.station_limits.keys():
             self.station_limits[station] = {}
-        self.station_limits[station][self.MAX_MOIST] = value
+        self.station_limits[station][self.MAX_MOIST] = float(value)
         self._write_station_limits()
 
     def _handle_moisture(self, raw_moisture, station):
