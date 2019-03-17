@@ -1,6 +1,10 @@
 import cherrypy
 import datetime
+import configparser
 from plant_moisture_http_server.db_client import DBClient
+
+
+STATION_LIMIT_FILE = "config/station_limits.ini"
 
 
 @cherrypy.expose
@@ -19,9 +23,27 @@ class DataServer:
             self.db_client.create_database(self.DB_NAME)
         self.db_client.switch_database(self.DB_NAME)
 
-        self.station_limits = {
-            '1': {self.MIN_MOIST: 1024.0, self.MAX_MOIST: 0.0}
-        }
+        self.station_limits = self._read_station_limits()
+
+    def _read_station_limits(self):
+        station_limits = {}
+        config = configparser.ConfigParser()
+        config.read(STATION_LIMIT_FILE)
+        for station in config.sections():
+            station_limits[station] = {}
+            try:
+                station_limits[station][self.MIN_MOIST] = config[station][self.MIN_MOIST]
+                station_limits[station][self.MIN_MOIST] = config[station][self.MAX_MOIST]
+            except KeyError:
+                del station_limits[station]
+        return station_limits
+
+    def _write_station_limits(self):
+        config = configparser.ConfigParser()
+        for station in self.station_limits.keys():
+            config[station] = self.station_limits[station]
+        with open(STATION_LIMIT_FILE, 'w') as configfile:
+            config.write(configfile)
 
     def GET(self, **kwargs):
         if self.STATION in kwargs.keys() and self.MOISTURE in kwargs.keys():
@@ -46,10 +68,16 @@ class DataServer:
             self._write_entry_to_db(station, self._handle_moisture(raw_moisture, station))
 
     def _set_station_min(self, station, value):
-        pass
+        if station not in self.station_limits.keys:
+            self.station_limits[station] = {}
+        self.station_limits[station][self.MIN_MOIST] = value
+        self._write_station_limits()
 
     def _set_station_max(self, station, value):
-        pass
+        if station not in self.station_limits.keys:
+            self.station_limits[station] = {}
+        self.station_limits[station][self.MAX_MOIST] = value
+        self._write_station_limits()
 
     def _handle_moisture(self, raw_moisture, station):
         try:
